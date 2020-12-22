@@ -1,12 +1,15 @@
 import React from 'react';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { ConfigService } from '../services/ConfigService';
+import ThemeService from '../services/ThemeService';
+import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
 
 export interface ITabConfigPageProps { };
 export interface ITabConfigPageState {
   tabName: string;
   shortMessage: string;
   firstRun: boolean;
+  theme: ThemePrepared
 }
 export default class TabConfig extends React.Component<ITabConfigPageProps, ITabConfigPageState> {
 
@@ -15,15 +18,17 @@ export default class TabConfig extends React.Component<ITabConfigPageProps, ITab
     this.state = {
       tabName: "My Tab",
       shortMessage: "",
-      firstRun: false
+      firstRun: false,
+      theme: ThemeService.getFluentTheme()
     }
   }
 
   async componentDidMount() {
-    const configInfo = await ConfigService.getConfigInfo();
+    let { config, teamsContext } = await ConfigService.getContextAndConfig();
     this.setState({
-      shortMessage: configInfo.shortMessage,
-      firstRun: !configInfo.shortMessage
+      shortMessage: config.shortMessage,
+      firstRun: !config.shortMessage,
+      theme: ThemeService.getFluentTheme(teamsContext.theme)
     });
     microsoftTeams.appInitialization.notifySuccess();
   }
@@ -50,8 +55,8 @@ export default class TabConfig extends React.Component<ITabConfigPageProps, ITab
 
     this.checkValidityState();
     return (
-      <div>
-        <h1>Tab Configuration</h1>
+      <Provider theme={this.state.theme}>
+      <Header>Tab Configuration</Header>
         <table>
           { this.state.firstRun ?
             <tr>
@@ -72,7 +77,7 @@ export default class TabConfig extends React.Component<ITabConfigPageProps, ITab
             </td>
           </tr>
         </table>
-      </div>
+      </Provider>
     );
   }
 

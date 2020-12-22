@@ -1,5 +1,5 @@
 import React from 'react';
-import { IConfigInfo, ConfigService } from '../services/ConfigService';
+import { IConfig, ConfigService } from '../services/ConfigService';
 import ThemeService from '../services/ThemeService';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
@@ -9,7 +9,8 @@ import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
  */
 export interface ITabPageProps { }
 export interface ITabPageState {
-  config?: IConfigInfo;
+  config?: IConfig;
+  teamsContext?: microsoftTeams.Context;
   theme: ThemePrepared;
 }
 
@@ -19,15 +20,17 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
     super(props);
     this.state = {
       config: undefined,
+      teamsContext: undefined,
       theme: ThemeService.getFluentTheme()
     }
   }
 
   async componentDidMount() {
-    let configInfo = await ConfigService.getConfigInfo();
+    let { config, teamsContext } = await ConfigService.getContextAndConfig();
     this.setState({
-      config: configInfo,
-      theme: ThemeService.getFluentTheme(configInfo.teamsContext?.theme)
+      config: config,
+      teamsContext: teamsContext,
+      theme: ThemeService.getFluentTheme(teamsContext.theme)
     });
     ThemeService.registerOnThemeChangeHandler((newTheme) => {
       this.setState({
@@ -39,15 +42,15 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
 
   render() {
 
-    if (!this.state.config?.teamsContext) {
+    if (!this.state.config) {
       return <div>loading...</div>
     } else {
 
       return (
         <Provider theme={this.state.theme}>
           <Header>{process.env.REACT_APP_MANIFEST_NAME}</Header>
-          <p>{this.state.config.teamsContext.teamName ?
-            `You are in ${this.state.config.teamsContext.teamName}` :
+          <p>{this.state.teamsContext?.teamName ?
+            `You are in ${this.state.teamsContext?.teamName}` :
             `You are not in a Team`
           }</p>
           <p>Your app is running in the Teams UI</p>
