@@ -1,8 +1,8 @@
 import React from 'react';
 import { IConfigInfo, ConfigService } from '../services/ConfigService';
+import ThemeService from '../services/ThemeService';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
-import { teamsTheme, teamsDarkTheme, teamsHighContrastTheme } from '@fluentui/react-northstar';
 
 /**
  * The web UI to display in the Teams UI
@@ -19,7 +19,7 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
     super(props);
     this.state = {
       config: undefined,
-      theme: teamsTheme
+      theme: ThemeService.getFluentTheme()
     }
   }
 
@@ -27,22 +27,14 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
     let configInfo = await ConfigService.getConfigInfo();
     this.setState({
       config: configInfo,
-      theme: this.getTheme(configInfo.teamsContext?.theme)
+      theme: ThemeService.getFluentTheme(configInfo.teamsContext?.theme)
     });
-    microsoftTeams.registerOnThemeChangeHandler((theme: string = "default"): void => {
-
+    ThemeService.registerOnThemeChangeHandler((newTheme) => {
       this.setState({
-        theme: this.getTheme(theme)
+        theme: newTheme
       });
     });
     microsoftTeams.appInitialization.notifyAppLoaded();
-  }
-
-  private getTheme(theme?: string): ThemePrepared {
-    let result = teamsTheme;
-    if (theme === 'dark') result = teamsDarkTheme;
-    if (theme === 'contrast') result = teamsHighContrastTheme
-    return result
   }
 
   render() {
