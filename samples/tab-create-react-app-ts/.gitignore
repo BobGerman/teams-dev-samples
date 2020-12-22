@@ -21,6 +21,8 @@
 .cert
 .eslintcache
 .vscode
+manifest/manifest.json
+manifest/*.zip
 
 npm-debug.log*
 yarn-debug.log*

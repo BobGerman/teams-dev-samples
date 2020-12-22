@@ -20,10 +20,15 @@
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
   },
+  "devDependencies": {
+    "adm-zip": "^0.4.16",
+    "dotenv": "^8.2.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "manifest": "node manifest/build.js .env.local",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
