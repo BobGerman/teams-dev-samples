@@ -28,11 +28,22 @@
       "configurationUrl": "https://<HOSTNAME>:<PORT>/#/config",
       "canUpdateConfiguration": true,
       "scopes": [
-        "team"
+        "team",
+        "groupchat"
       ]
     }
   ],
-  "staticTabs": [ ],
+  "staticTabs": [
+    {
+      "entityId": "<NAME>",
+      "name": "<NAME>",
+      "contentUrl": "https://<HOSTNAME>:<PORT>/#/tab",
+      "websiteUrl": "https://<HOSTNAME>:<PORT>/#/web",
+      "scopes": [
+        "personal"
+      ]
+    }
+  ],
   "bots": [ ],
   "permissions": [
       "identity",

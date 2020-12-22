@@ -1,7 +1,8 @@
 import * as microsoftTeams from "@microsoft/teams-js";
 
 export interface IConfigInfo {
-    shortMessage: string;
+  shortMessage: string;
+  teamsContext?: microsoftTeams.Context;
 }
 
 // Quick and dirty config stores a short string in the entity ID
@@ -15,11 +16,14 @@ export class ConfigService {
 
   public static async getConfigInfo(): Promise<IConfigInfo> {
     return new Promise<IConfigInfo>((resolve) => {
-        microsoftTeams.getContext((context: microsoftTeams.Context) => {
-            resolve({
-                shortMessage: context.entityId.split('/')[0]
-            });
+
+      microsoftTeams.getContext((context: microsoftTeams.Context) => {
+        resolve({
+          shortMessage: context.entityId.split('/')[0],
+          teamsContext: context
         });
+      });
+
     });
   }
 
