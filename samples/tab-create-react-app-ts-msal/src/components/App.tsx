@@ -1,0 +1,72 @@
+import React from 'react';
+import './App.css';
+import * as microsoftTeams from "@microsoft/teams-js";
+import { HashRouter as Router, Route } from "react-router-dom";
+import PrivacyPage from "./PrivacyPage";
+import TermsOfUsePage from "./TermsOfUsePage";
+import TabPage from './TabPage';
+import TabConfigPage from "./TabConfigPage";
+import WebPage from "./WebPage";
+
+/**
+ * The main app which handles the initialization and routing
+ * of the app.
+ */
+function App() {
+  // Check for the Microsoft Teams SDK object.
+  if (microsoftTeams) {
+
+    // Set app routings that don't require microsoft Teams
+    // SDK functionality.  Show an error if trying to access the
+    // Home page.
+    if (window.parent === window.self) {
+      return (
+        <div className="App">
+          <Router>
+            <Route exact path="/privacy" component={PrivacyPage} />
+            <Route exact path="/termsofuse" component={TermsOfUsePage} />
+            <Route exact path="/web" component={WebPage} />
+            <Route exact path="/" component={WebPage} />
+            <Route exact path="/tab" component={TeamsHostError} />
+            <Route exact path="/config" component={TeamsHostError} />
+          </Router>
+        </div>
+      );
+    }
+
+    // Initialize the Microsoft Teams SDK
+    microsoftTeams.initialize(window as any);
+
+    // Display the app home page hosted in Teams
+    return (
+      <div className="App">
+        <Router>
+          <Route exact path="/tab" component={TabPage} />
+          <Route exact path="/config" component={TabConfigPage} />
+        </Router>
+      </div>
+    );
+  }
+
+  // Error when the Microsoft Teams SDK is not found
+  // in the project.
+  return (
+    <h3>Microsoft Teams SDK not found.</h3>
+  );
+}
+
+/**
+ * This component displays an error message in the
+ * case when a page is not being hosted within Teams.
+ */
+class TeamsHostError extends React.Component {
+  render() {
+    return (
+      <div>
+        <h3 className="Error">Debug your app within the Teams client.</h3>
+      </div>
+    );
+  }
+}
+
+export default App;
