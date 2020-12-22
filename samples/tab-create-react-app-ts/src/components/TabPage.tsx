@@ -24,6 +24,7 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
     this.setState({
       config: configInfo
     });
+    microsoftTeams.appInitialization.notifyAppLoaded();
   }
 
   render() {

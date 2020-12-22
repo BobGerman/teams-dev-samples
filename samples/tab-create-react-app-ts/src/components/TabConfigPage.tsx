@@ -25,6 +25,7 @@ export default class TabConfig extends React.Component<ITabConfigPageProps, ITab
       shortMessage: configInfo.shortMessage,
       firstRun: !configInfo.shortMessage
     });
+    microsoftTeams.appInitialization.notifySuccess();
   }
 
   render() {

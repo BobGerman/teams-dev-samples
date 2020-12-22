@@ -45,6 +45,7 @@
     }
   ],
   "bots": [ ],
+  "showLoadingIndicator": true,
   "permissions": [
       "identity",
       "messageTeamMembers"
