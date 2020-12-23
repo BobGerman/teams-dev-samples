@@ -49,6 +49,7 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
       return (
         <Provider theme={this.state.theme}>
           <Header>{process.env.REACT_APP_MANIFEST_NAME}</Header>
+          <p>Version {process.env.REACT_APP_MANIFEST_APP_VERSION}</p>
           <p>{this.state.teamsContext?.teamName ?
             `You are in ${this.state.teamsContext?.teamName}` :
             `You are not in a Team`

@@ -9,6 +9,7 @@ export default class WebPage extends React.Component {
     return (
       <div>
         <h1>{process.env.REACT_APP_MANIFEST_NAME}</h1>
+        <p>Version {process.env.REACT_APP_MANIFEST_APP_VERSION}</p>
         <p>Your app is running in a stand-alone web page</p>
         <p>Your short message is not available</p>
       </div>
