@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.8/MicrosoftTeams.schema.json",
   "manifestVersion": "1.8",
-  "version": "1.0.0",
-  "id": "<APP_ID>",
+  "version": "<APP_VERSION>",
+  "id": "<TEAMS_APP_ID>",
   "packageName": "io.github.pnp.teamsdevsamples.tab-create-react-app-ts",
   "developer": {
       "name": "Developer Name",
