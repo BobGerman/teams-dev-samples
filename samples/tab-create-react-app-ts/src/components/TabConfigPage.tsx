@@ -6,7 +6,7 @@ import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
 
 export interface ITabConfigPageProps { };
 export interface ITabConfigPageState {
-  tabName: string;
+  tabName?: string;
   shortMessage: string;
   firstRun: boolean;
   theme: ThemePrepared
@@ -16,7 +16,7 @@ export default class TabConfig extends React.Component<ITabConfigPageProps, ITab
   constructor(props: ITabConfigPageProps) {
     super(props);
     this.state = {
-      tabName: "My Tab",
+      tabName: process.env.REACT_APP_MANIFEST_NAME,
       shortMessage: "",
       firstRun: false,
       theme: ThemeService.getFluentTheme()
