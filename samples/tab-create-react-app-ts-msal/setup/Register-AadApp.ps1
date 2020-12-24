@@ -7,8 +7,9 @@ Set-PsEnv "../.env.$environment"
 
 # Settings for use in script
 $appName = $env:SETUP_AAD_APPNAME
-$domain = "$env:REACT_APP_MANIFEST_HOSTNAME`:$env:REACT_APP_MANIFEST_PORT"
-$protocol = "https://"
+$scheme = "https://"
+$hostname = $env:REACT_APP_MANIFEST_HOSTNAME
+$port = $env:REACT_APP_MANIFEST_PORT
 $years = $env:SETUP_AAD_YEARS_TO_EXPIRE_SECRET
 
 "Registering application $env:SETUP_AAD_APPNAME"
@@ -44,10 +45,12 @@ $resourceJson =
 $resourceJson = "[" + $resourceJson + "]"
 
 # Create the AAD app
-"Creating AAD app $appName for $protocol$domain..."
-$tabApp = az ad app create --display-name $appName --available-to-other-tenants $false --reply-urls "$protocol$domain" --required-resource-accesses $resourceJson | ConvertFrom-Json 
+"Creating AAD app $appName for $scheme$hostname`:$port in tenant $tenantId..."
+$tabApp = az ad app create --display-name $appName --available-to-other-tenants $false --reply-urls $scheme$hostname`:$port --required-resource-accesses $resourceJson | ConvertFrom-Json 
 
 # Delay to allow time for the AAD app to be created or the script will fail later on
+
+""
 "Waiting for the app to be fully provisioned..."
 Start-Sleep -Seconds 10
 
@@ -59,7 +62,7 @@ az ad app owner add --id $tabApp.appId --owner-object-id $userId
 # set SPA redirect URL - not supported in az cli yet
 "Configuring SPA on the app..."
 $tabAppAuthentication = @"
-{"id":"$($tabApp.objectId)","spa":{"redirectUris":["$protocol$domain"]},"publicClient":{"redirectUris":[]},"web":{"redirectUris":[],"implicitGrantSettings":{"enableAccessTokenIssuance":false,"enableIdTokenIssuance":false}}}
+{"id":"$($tabApp.objectId)","spa":{"redirectUris":["$scheme$hostname"]},"publicClient":{"redirectUris":[]},"web":{"redirectUris":[],"implicitGrantSettings":{"enableAccessTokenIssuance":false,"enableIdTokenIssuance":false}}}
 "@ -replace "`"", "\`""
 
 az rest --method patch --uri "https://graph.microsoft.com/v1.0/myorganization/applications/$($tabApp.objectId)" --body "$tabAppAuthentication"
@@ -68,10 +71,9 @@ az rest --method patch --uri "https://graph.microsoft.com/v1.0/myorganization/ap
 "Configuring a secret that will last $years years..."
 $tabAppSecret = az ad app credential reset --id $tabApp.appId --credential-description "Register-AadApp" --years $years | ConvertFrom-Json
 
-""
+"Copy these lines to your .env.local or other .env file:"
 "REACT_APP_AAD_TENANT_ID=$tenantId"
 "REACT_APP_AAD_APP_ID=$($tabApp.appId)"
 "REACT_APP_AAD_APP_SECRET=$($tabAppSecret.password)"
-# "AppUri=api://$domain/$($tabApp.appId)"
 
 Write-Host DONE -ForegroundColor Green
