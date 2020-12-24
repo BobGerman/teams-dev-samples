@@ -29,7 +29,7 @@ class MsalAuthService implements IMSalAuthService {
         let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',');
         scopes?.forEach((scope) => {
             this.msalRequest.scopes.push(scope);
-        })
+        });
 
         // Keep this MSAL client around to manage state across SPA "pages"
         this.msalClient = new msal.PublicClientApplication(msalConfig);
