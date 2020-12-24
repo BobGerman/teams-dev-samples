@@ -1,5 +1,6 @@
 import * as msal from '@azure/msal-browser';
-import IMSalAuthService, { IAccessTokenEx } from './IMSalAuthService';
+import IAuthState from './IAuthState';
+import IMSalAuthService from './IMSalAuthService';
 
 // AuthService is a singleton so one PublicClientApplication
 // can retain state. This module exports the single instance
@@ -97,9 +98,9 @@ class MsalAuthService implements IMSalAuthService {
     }
 
     // Call this to get the username, access token, and expiration date
-    async getAccessTokenEx(scopes?: string[]): Promise<IAccessTokenEx | null> {
+    async getAccessTokenEx(scopes?: string[]): Promise<IAuthState | null> {
 
-        let result: IAccessTokenEx | null = null;
+        let result: IAuthState | null = null;
 
         this.msalRequest.account =
             this.msalClient.getAccountByUsername(this.getUsername()) ?? undefined;

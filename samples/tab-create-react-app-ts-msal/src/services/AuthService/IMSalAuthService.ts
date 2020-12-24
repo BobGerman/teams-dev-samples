@@ -1,8 +1,4 @@
-export interface IAccessTokenEx {
-    username: string;
-    accessToken: string;
-    expiresOn: number;
-}
+import IAuthState from './IAuthState';
 
 export default interface IMSalAuthService {
     init: () => Promise<boolean>;
@@ -10,5 +6,5 @@ export default interface IMSalAuthService {
     getUsername: () => string;
     login: (scopes?: string[]) => void;
     getAccessToken: (scopes?: string[]) => Promise<string>;
-    getAccessTokenEx: (scopes?: string[]) => Promise<IAccessTokenEx | null>;
+    getAccessTokenEx: (scopes?: string[]) => Promise<IAuthState | null>;
 }
