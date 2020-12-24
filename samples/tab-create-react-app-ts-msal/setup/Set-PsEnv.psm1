@@ -36,7 +36,7 @@ function Set-PsEnv {
         # Ignore comments
         if ($line.StartsWith("#")) { continue };
         # Ignore settings we don't need
-        if (!$line.StartsWith("SETUP_") -and !$line.StartsWith("REACT_APP_MANIFEST_")) {continue};
+        if (!$line.StartsWith("SETUP_") -and !$line.StartsWith("REACT_APP_")) {continue};
         # Add the setting
         if ($line.Trim()) {
             $line = $line.Replace("`"","")

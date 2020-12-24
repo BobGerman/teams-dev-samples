@@ -1,5 +1,4 @@
 import * as msal from '@azure/msal-browser';
-import * as Config from '../Config';
 
 // AuthService is a singleton so one PublicClientApplication
 // can retain state. This module exports the single instance
@@ -7,24 +6,25 @@ import * as Config from '../Config';
 // don't new it up.
 class AuthService {
 
+
+    // MSAL request object to use over and over
+    private request = {
+        scopes: ["user.read"]
+    }
+        
     constructor() {
 
         const msalConfig = {
             auth: {
-                clientId: Config.clientId,
-                authority: Config.authority,
-                redirectUri: Config.redirectUri
+                clientId: process.env.REACT_APP_AAD_APP_ID,
+                authority: `${process.env.REACT_APP_AAD_AUTH_ENDPOINT}/${process.env.REACT_APP_AAD_TENANT_ID}`,
+                redirectUri: `https://${process.env.REACT_APP_MANIFEST_HOSTNAME}:${process.env.REACT_APP_MANIFEST_PORT}`
             },
             cache: {
                 cacheLocation: "sessionStorage", // This configures where your cache will be stored
                 storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
             }
         };
-
-        // MSAL request object to use over and over
-        this.request = {
-            scopes: ["user.read"]
-        }
 
         // Keep this MSAL client around to manage state across SPA "pages"
         this.msalClient = new msal.PublicClientApplication(msalConfig);
