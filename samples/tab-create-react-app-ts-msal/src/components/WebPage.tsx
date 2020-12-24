@@ -1,9 +1,56 @@
 import React from 'react';
+import AuthService from '../services/AuthService/MsalAuthService';
+import * as MicrosoftGraphClient from "@microsoft/microsoft-graph-client";
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 
 /**
  * The web UI used when Teams pops out a browser window
  */
-export default class WebPage extends React.Component {
+export interface IWebPageProps { }
+export interface IWebPageState {
+  accessToken: string;
+  messages: MicrosoftGraph.Message[];
+  error: string;
+}
+export default class WebPage extends React.Component<IWebPageProps, IWebPageState> {
+
+  constructor(props: IWebPageProps) {
+    super(props);
+    this.state = {
+      accessToken: "",
+      messages: [],
+      error: ""
+    }
+  }
+
+  private msGraphClient?: MicrosoftGraphClient.Client;
+
+  componentWillMount() {
+
+    let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',');
+    if (!AuthService.isLoggedIn()) {
+
+      // Will redirect the browser and not return; will redirect back when done
+      AuthService.login(scopes);
+
+    } else {
+
+      this.msGraphClient = MicrosoftGraphClient.Client.init({
+
+        authProvider: async (done) => {
+          if (!this.state.accessToken) {
+            // Might redirect the browser and not return; will redirect back when done
+            const token = await AuthService.getAccessToken(scopes);
+            this.setState({
+              accessToken: token
+            });
+          }
+          done(null, this.state.accessToken);
+        }
+
+      });
+    }
+  }
 
   render() {
     return (
@@ -12,8 +59,42 @@ export default class WebPage extends React.Component {
         <p>Version {process.env.REACT_APP_MANIFEST_APP_VERSION}</p>
         <p>Your app is running in a stand-alone web page</p>
         <p>Your short message is not available</p>
+
+        <button onClick={this.getMessages.bind(this)}>Get Mail</button>
+        <p>Username: {AuthService.getUsername()}</p>
+        <ol>
+          {
+            this.state.messages.map(message => (
+              <li>EMAIL: {message.receivedDateTime}<br />{message.subject}
+              </li>
+            ))
+          }
+        </ol>
+
+
       </div>
     );
   }
 
+  private getMessages() {
+
+    if (this.msGraphClient) {
+
+      this.msGraphClient
+      .api("me/mailFolders/inbox/messages")
+      .select(["receivedDateTime", "subject"])
+      .top(15)
+      .get(async (error: MicrosoftGraphClient.GraphError, response: any) => {
+        if (!error) {
+          this.setState(Object.assign({}, this.state, {
+            messages: response.value as MicrosoftGraph.Message[]
+          }));
+        } else {
+          this.setState({
+            error: error.message
+          });
+        }
+      });
+    }
+  }
 }

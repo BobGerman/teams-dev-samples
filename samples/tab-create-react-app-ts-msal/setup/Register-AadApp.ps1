@@ -26,7 +26,7 @@ $graphId = $graphId.Replace('"','')
 
 # Build resource access portion of AAD app manifest
 $resourceAccess = @()
-$scopes = $env:SETUP_AAD_GRAPH_DELEGATED_SCOPES.Split(',')
+$scopes = $env:REACT_APP_AAD_GRAPH_DELEGATED_SCOPES.Split(',')
 Foreach ($scope in $scopes)
 {
     # Get ID of the specified scope
@@ -62,7 +62,7 @@ az ad app owner add --id $tabApp.appId --owner-object-id $userId
 # set SPA redirect URL - not supported in az cli yet
 "Configuring SPA on the app..."
 $tabAppAuthentication = @"
-{"id":"$($tabApp.objectId)","spa":{"redirectUris":["$scheme$hostname"]},"publicClient":{"redirectUris":[]},"web":{"redirectUris":[],"implicitGrantSettings":{"enableAccessTokenIssuance":false,"enableIdTokenIssuance":false}}}
+{"id":"$($tabApp.objectId)","spa":{"redirectUris":["$scheme$hostname`:$port"]},"publicClient":{"redirectUris":[]},"web":{"redirectUris":[],"implicitGrantSettings":{"enableAccessTokenIssuance":false,"enableIdTokenIssuance":false}}}
 "@ -replace "`"", "\`""
 
 az rest --method patch --uri "https://graph.microsoft.com/v1.0/myorganization/applications/$($tabApp.objectId)" --body "$tabAppAuthentication"

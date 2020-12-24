@@ -7,66 +7,85 @@ import TermsOfUsePage from "./TermsOfUsePage";
 import TabPage from './TabPage';
 import TabConfigPage from "./TabConfigPage";
 import WebPage from "./WebPage";
+import AuthService from '../services/AuthService/MsalAuthService';
 
 /**
  * The main app which handles the initialization and routing
  * of the app.
  */
-function App() {
-  // Check for the Microsoft Teams SDK object.
-  if (microsoftTeams) {
+export interface IAppProps { };
+export interface IAppState {
+  authInitialized: boolean;
+}
 
-    // Set app routings that don't require microsoft Teams
-    // SDK functionality.  Show an error if trying to access the
-    // Home page.
-    if (window.parent === window.self) {
+export default class App extends React.Component<IAppProps, IAppState> {
+
+  constructor(props: IAppProps) {
+    super(props);
+    this.state = {
+      authInitialized: false
+    }
+  }
+
+  componentDidMount() {
+    // React routing and OAuth don't play nice together
+    // Take care of the OAuth fun before routing
+    AuthService.init().then(() => {
+      this.setState({
+        authInitialized: true
+      });
+    })
+  }
+
+  render() {
+
+    if (microsoftTeams) {
+
+      // Set up routes that don't use the Teams SDK
+      if (window.parent === window.self) {
+        return (
+          <div className="App">
+            <Router>
+              <Route exact path="/privacy" component={PrivacyPage} />
+              <Route exact path="/termsofuse" component={TermsOfUsePage} />
+              <Route exact path="/web" component={WebPage} />
+              <Route exact path="/" component={WebPage} />
+              <Route exact path="/tab" component={TeamsHostError} />
+              <Route exact path="/config" component={TeamsHostError} />
+            </Router>
+          </div>
+        );
+      }
+
+      // Initialize the Microsoft Teams SDK
+      microsoftTeams.initialize(window as any);
+
+      // Set up routes that use the Teams SDK
       return (
         <div className="App">
           <Router>
-            <Route exact path="/privacy" component={PrivacyPage} />
-            <Route exact path="/termsofuse" component={TermsOfUsePage} />
-            <Route exact path="/web" component={WebPage} />
-            <Route exact path="/" component={WebPage} />
-            <Route exact path="/tab" component={TeamsHostError} />
-            <Route exact path="/config" component={TeamsHostError} />
+            <Route exact path="/tab" component={TabPage} />
+            <Route exact path="/config" component={TabConfigPage} />
           </Router>
         </div>
       );
     }
 
-    // Initialize the Microsoft Teams SDK
-    microsoftTeams.initialize(window as any);
-
-    // Display the app home page hosted in Teams
+    // Error when the Microsoft Teams SDK is not found
+    // in the project.
     return (
-      <div className="App">
-        <Router>
-          <Route exact path="/tab" component={TabPage} />
-          <Route exact path="/config" component={TabConfigPage} />
-        </Router>
-      </div>
+      <h3>Microsoft Teams SDK not found.</h3>
     );
+
+    // Thiscomponent displays an error message when a route
+    // requiring Teams is run outside of Teams
+    function TeamsHostError() {
+      return (
+        <div>
+          <h3 className="Error">This page is for use in Microsoft Teams.</h3>
+        </div>
+      );
+    }
   }
 
-  // Error when the Microsoft Teams SDK is not found
-  // in the project.
-  return (
-    <h3>Microsoft Teams SDK not found.</h3>
-  );
 }
-
-/**
- * This component displays an error message in the
- * case when a page is not being hosted within Teams.
- */
-class TeamsHostError extends React.Component {
-  render() {
-    return (
-      <div>
-        <h3 className="Error">Debug your app within the Teams client.</h3>
-      </div>
-    );
-  }
-}
-
-export default App;

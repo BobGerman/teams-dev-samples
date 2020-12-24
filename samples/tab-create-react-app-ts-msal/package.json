@@ -23,6 +23,7 @@
     "web-vitals": "^0.2.4"
   },
   "devDependencies": {
+    "@microsoft/microsoft-graph-types": "^1.28.0",
     "adm-zip": "^0.4.16",
     "dotenv": "^8.2.0"
   },
