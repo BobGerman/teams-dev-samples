@@ -6,6 +6,7 @@ import PrivacyPage from "./PrivacyPage";
 import TermsOfUsePage from "./TermsOfUsePage";
 import TabPage from './TabPage';
 import TabConfigPage from "./TabConfigPage";
+import TeamsAuthPopup from "./TeamsAuthPopup";
 import WebPage from "./WebPage";
 import AuthService from '../services/AuthService/MsalAuthService';
 
@@ -50,6 +51,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
               <Route exact path="/termsofuse" component={TermsOfUsePage} />
               <Route exact path="/web" component={WebPage} />
               <Route exact path="/" component={WebPage} />
+              <Route exact path="/teamsauthpopup" component={TeamsAuthPopup} />
               <Route exact path="/tab" component={TeamsHostError} />
               <Route exact path="/config" component={TeamsHostError} />
             </Router>
