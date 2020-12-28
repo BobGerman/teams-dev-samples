@@ -25,7 +25,7 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
 
   private msGraphClient?: MicrosoftGraphClient.Client;
 
-  componentWillMount() {
+  componentDidMount() {
 
     let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',');
     if (!AuthService.isLoggedIn()) {
@@ -53,6 +53,8 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
   }
 
   render() {
+    
+    let key = 0;
     return (
       <div>
         <h1>{process.env.REACT_APP_MANIFEST_NAME}</h1>
@@ -65,7 +67,7 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
         <ol>
           {
             this.state.messages.map(message => (
-              <li>EMAIL: {message.receivedDateTime}<br />{message.subject}
+              <li key={key++}>EMAIL: {message.receivedDateTime}<br />{message.subject}
               </li>
             ))
           }
