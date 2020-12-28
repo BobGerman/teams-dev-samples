@@ -7,6 +7,13 @@ h1 {
 h2 {
   font-size: .8em;
 }
+ol {
+  text-align: left;
+  padding-left: 100pt;
+}
+li {
+  padding-bottom: 10pt;
+}
 .PropName {
   font-weight: bold;
   color: #6264A7;
