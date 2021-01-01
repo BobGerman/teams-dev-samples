@@ -1,5 +1,5 @@
 import React from 'react';
-import AuthService from '../services/AuthService/MsalAuthService';
+import AuthService from '../../services/AuthService/MsalAuthService';
 import * as MicrosoftGraphClient from "@microsoft/microsoft-graph-client";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 

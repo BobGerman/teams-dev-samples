@@ -1,9 +1,9 @@
 import React from 'react';
-import { IConfig, ConfigService } from '../services/ConfigService/ConfigService';
-import ThemeService from '../services/ThemeService/ThemeService';
+import { IConfig, ConfigService } from '../../services/ConfigService/ConfigService';
+import ThemeService from '../../services/ThemeService/ThemeService';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
-import TeamsAuthService from '../services/AuthService/TeamsAuthService';
+import TeamsAuthService from '../../services/AuthService/TeamsAuthService';
 import * as MicrosoftGraphClient from "@microsoft/microsoft-graph-client";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 

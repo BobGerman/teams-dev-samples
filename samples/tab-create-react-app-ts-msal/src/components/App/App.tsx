@@ -2,13 +2,13 @@ import React from 'react';
 import './App.css';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { HashRouter as Router, Route } from "react-router-dom";
-import PrivacyPage from "./PrivacyPage";
-import TermsOfUsePage from "./TermsOfUsePage";
-import TabPage from './TabPage';
-import TabConfigPage from "./TabConfigPage";
-import TeamsAuthPopup from "./TeamsAuthPopup";
-import WebPage from "./WebPage";
-import AuthService from '../services/AuthService/MsalAuthService';
+import PrivacyPage from "../Pages/PrivacyPage";
+import TermsOfUsePage from "../Pages/TermsOfUsePage";
+import TabPage from '../Pages/TabPage';
+import TabConfigPage from "../Pages/TabConfigPage";
+import TeamsAuthPopup from "../Pages/TeamsAuthPopup";
+import WebPage from "../Pages/WebPage";
+import AuthService from '../../services/AuthService/MsalAuthService';
 
 /**
  * The main app which handles the initialization and routing

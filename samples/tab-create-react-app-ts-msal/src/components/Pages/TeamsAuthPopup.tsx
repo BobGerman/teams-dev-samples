@@ -1,7 +1,7 @@
 import React from 'react';
 import * as microsoftTeams from "@microsoft/teams-js";
 
-import AuthService from "../services/AuthService/MsalAuthService";
+import AuthService from "../../services/AuthService/MsalAuthService";
 
 class TeamsAuthPopup extends React.Component {
 

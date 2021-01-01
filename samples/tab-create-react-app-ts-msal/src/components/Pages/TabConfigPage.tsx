@@ -1,7 +1,7 @@
 import React from 'react';
 import * as microsoftTeams from "@microsoft/teams-js";
-import { ConfigService } from '../services/ConfigService/ConfigService';
-import ThemeService from '../services/ThemeService/ThemeService';
+import { ConfigService } from '../../services/ConfigService/ConfigService';
+import ThemeService from '../../services/ThemeService/ThemeService';
 import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
 
 export interface ITabConfigPageProps { };
