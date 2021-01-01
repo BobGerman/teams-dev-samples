@@ -37,7 +37,7 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
 
       this.msGraphClient = MicrosoftGraphClient.Client.init({
 
-        authProvider: async (done) => {
+        authProvider: async (done: MicrosoftGraphClient.AuthProviderCallback) => {
           if (!this.state.accessToken) {
             // Might redirect the browser and not return; will redirect back when done
             const token = await AuthService.getAccessToken(scopes);
