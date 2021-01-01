@@ -1,12 +1,11 @@
 import * as msal from '@azure/msal-browser';
 import IAuthState from './IAuthState';
-import IMSalAuthService from './IMSalAuthService';
 
 // AuthService is a singleton so one PublicClientApplication
 // can retain state. This module exports the single instance
 // of the service rather than the service class; just use it,
 // don't new it up.
-class MsalAuthService implements IMSalAuthService {
+class MsalAuthService {
 
     // MSAL request object to use over and over
     private msalRequest: msal.RedirectRequest = { scopes: [] as string[] };

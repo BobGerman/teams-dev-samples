@@ -1,11 +1,10 @@
 import IAuthState from './IAuthState';
 import * as microsoftTeams from "@microsoft/teams-js";
-import ITeamsAuthService from './ITeamsAuthService';
 
 // TeamsAuthService is a singleton so it can retain the user's state independent of React state.
 // This module exports the single instance of the service rather than the service class; just use it,
 // don't new it up.
-class TeamsAuthService implements ITeamsAuthService {
+class TeamsAuthService {
 
     private authState: IAuthState = {
         username: "",

@@ -1,6 +1,6 @@
 import React from 'react';
-import { IConfig, ConfigService } from '../services/ConfigService';
-import ThemeService from '../services/ThemeService';
+import { IConfig, ConfigService } from '../services/ConfigService/ConfigService';
+import ThemeService from '../services/ThemeService/ThemeService';
 import * as microsoftTeams from "@microsoft/teams-js";
 import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
 import TeamsAuthService from '../services/AuthService/TeamsAuthService';
