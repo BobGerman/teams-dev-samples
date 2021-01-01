@@ -43,7 +43,12 @@ export default class App extends React.Component<IAppProps, IAppState> {
     if (microsoftTeams) {
 
       if (!this.state.authInitialized) {
-        return <div className="App">Authorizing 2...</div>
+
+        return (
+          <div className="App">
+            <p>Authorizing (Part 2: Exchanging auth code for access token)</p>
+          </div>
+        );
 
       } else {
 

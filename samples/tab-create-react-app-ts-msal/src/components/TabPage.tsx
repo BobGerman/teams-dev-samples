@@ -15,7 +15,7 @@ export interface ITabPageState {
   config?: IConfig;
   teamsContext?: microsoftTeams.Context;
   theme: ThemePrepared;
-  accessToken?: string;
+  username: string;
   messages: MicrosoftGraph.Message[];
   error: string;
 }
@@ -28,6 +28,7 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
       config: undefined,
       teamsContext: undefined,
       theme: ThemeService.getFluentTheme(),
+      username: "",
       messages: [],
       error: ""
     }
@@ -52,12 +53,24 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
     microsoftTeams.appInitialization.notifyAppLoaded();
     microsoftTeams.appInitialization.notifySuccess();
     
+    // Attempt auth without user interaction (will fail due to popup blockers in many browsers)
+    this.getMessages();
   }
 
   render() {
 
-    if (!this.state.config) {
-      return <div>loading...</div>
+    if (!this.state.username) {
+
+      // Earlier attempt to log in failed
+      return (
+        <Provider theme={this.state.theme}>
+          <Header>{process.env.REACT_APP_MANIFEST_NAME}</Header>
+          <p>Version {process.env.REACT_APP_MANIFEST_APP_VERSION}</p>
+          { this.state.error ? <p>Error: {this.state.error}</p> : null }
+          <button onClick={this.getMessages.bind(this)}>Log in</button>
+        </Provider>
+      );
+
     } else {
 
       let key = 0;
@@ -65,13 +78,14 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
         <Provider theme={this.state.theme}>
           <Header>{process.env.REACT_APP_MANIFEST_NAME}</Header>
           <p>Version {process.env.REACT_APP_MANIFEST_APP_VERSION}</p>
+          { this.state.error ? <p>Error: {this.state.error}</p> : null }
           <p>{this.state.teamsContext?.teamName ?
             `You are in ${this.state.teamsContext?.teamName}` :
             `You are not in a Team`
           }</p>
           <p>Your app is running in the Teams UI</p>
-          <p>Your short message is {this.state.config.shortMessage}</p>
-          <button onClick={this.getMessages.bind(this)}>Get Mail</button>
+          <p>Your short message is {this.state.config?.shortMessage}</p>
+          <p>You are logged in as {this.state.username}</p>
           <ol>
           {
             this.state.messages.map(message => (
@@ -107,7 +121,8 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
       .get(async (error: MicrosoftGraphClient.GraphError, response: any) => {
         if (!error) {
           this.setState(Object.assign({}, this.state, {
-            messages: response.value as MicrosoftGraph.Message[]
+            messages: response.value as MicrosoftGraph.Message[],
+            username: TeamsAuthService.getUsername()
           }));
         } else {
           this.setState({

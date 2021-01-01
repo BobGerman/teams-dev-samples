@@ -43,7 +43,7 @@ class TeamsAuthPopup extends React.Component {
   }
 
   render() {
-    return (<p>Authorizing...</p>);
+    return (<p>Authorizing (Part 1: Redirecting to Azure AD)</p>);
   }
 }
 export default TeamsAuthPopup;
