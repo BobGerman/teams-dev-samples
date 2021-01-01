@@ -27,6 +27,7 @@ class TeamsAuthService implements ITeamsAuthService {
     getAccessToken(scopes: string[], msTeams: typeof microsoftTeams): Promise<string> {
         
         return new Promise<string>((resolve, reject) => {
+            console.log (window.location.origin + "#teamsauthpopup");
             msTeams.authentication.authenticate({
                 url: window.location.origin + "/#teamsauthpopup",
                 width: 600,

@@ -34,6 +34,7 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
   }
 
   async componentDidMount() {
+
     let { config, teamsContext } = await ConfigService.getContextAndConfig();
     this.setState({
       config: config,
@@ -45,7 +46,12 @@ export default class WebPage extends React.Component<ITabPageProps, ITabPageStat
         theme: newTheme
       });
     });
+
+    // Per https://stackoverflow.com/questions/63765776/personal-tab-renders-fine-then-a-few-seconds-later-shows-there-was-a-problem-r/64048235#64048235
+    // need to call both notifyAppLoaded() and notifySuccess() or Teams will error out after a few seconds
     microsoftTeams.appInitialization.notifyAppLoaded();
+    microsoftTeams.appInitialization.notifySuccess();
+    
   }
 
   render() {

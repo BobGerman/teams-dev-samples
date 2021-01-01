@@ -42,35 +42,41 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
     if (microsoftTeams) {
 
-      // Set up routes that don't use the Teams SDK
-      if (window.parent === window.self) {
+      if (!this.state.authInitialized) {
+        return <div className="App">Authorizing 2...</div>
+
+      } else {
+
+        // We are not running in a Teams IFrame, set up applicable routes:
+        if (window.parent === window.self) {
+          return (
+            <div className="App">
+              <Router>
+                <Route exact path="/privacy" component={PrivacyPage} />
+                <Route exact path="/termsofuse" component={TermsOfUsePage} />
+                <Route exact path="/web" component={WebPage} />
+                <Route exact path="/" component={WebPage} />
+                <Route exact path="/teamsauthpopup" component={TeamsAuthPopup} />
+                <Route exact path="/tab" component={TeamsHostError} />
+                <Route exact path="/config" component={TeamsHostError} />
+              </Router>
+            </div>
+          );
+        }
+
+        // Initialize the Microsoft Teams SDK
+        microsoftTeams.initialize(window as any);
+
+        // We are running in a Teams IFrame, set up applicable routes:
         return (
           <div className="App">
             <Router>
-              <Route exact path="/privacy" component={PrivacyPage} />
-              <Route exact path="/termsofuse" component={TermsOfUsePage} />
-              <Route exact path="/web" component={WebPage} />
-              <Route exact path="/" component={WebPage} />
-              <Route exact path="/teamsauthpopup" component={TeamsAuthPopup} />
-              <Route exact path="/tab" component={TeamsHostError} />
-              <Route exact path="/config" component={TeamsHostError} />
+              <Route exact path="/tab" component={TabPage} />
+              <Route exact path="/config" component={TabConfigPage} />
             </Router>
           </div>
         );
       }
-
-      // Initialize the Microsoft Teams SDK
-      microsoftTeams.initialize(window as any);
-
-      // Set up routes that use the Teams SDK
-      return (
-        <div className="App">
-          <Router>
-            <Route exact path="/tab" component={TabPage} />
-            <Route exact path="/config" component={TabConfigPage} />
-          </Router>
-        </div>
-      );
     }
 
     // Error when the Microsoft Teams SDK is not found
