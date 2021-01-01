@@ -49,6 +49,7 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
         }
 
       });
+      this.getMessages();
     }
   }
 
@@ -62,7 +63,6 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
         <p>Your app is running in a stand-alone web page</p>
         <p>Your short message is not available</p>
 
-        <button onClick={this.getMessages.bind(this)}>Get Mail</button>
         <p>Username: {AuthService.getUsername()}</p>
         <ol>
           {
