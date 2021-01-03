@@ -1,4 +1,5 @@
 import React from 'react';
+import IAuthService from '../../services/AuthService/IAuthService';
 import AuthService from '../../services/AuthService/MsalAuthService';
 import * as MicrosoftGraphClient from "@microsoft/microsoft-graph-client";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
@@ -54,56 +55,67 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
     );
   }
 
-  private msGraphClient?: MicrosoftGraphClient.Client;
-  private async getMessages(): Promise<MicrosoftGraph.Message[]> {
+  private async getMessages(): Promise<void> {
 
-    let result: MicrosoftGraph.Message[] = [];
-
-    if (!this.msGraphClient) {
-
-      // Set up the Graph client
-      let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',') || [];
-
-      // Ensure we are logged in
-      if (!AuthService.isLoggedIn()) {
-
-        await AuthService.login(scopes);
-
-      }
-
-      // Initialize a new Graph client
-      this.msGraphClient = MicrosoftGraphClient.Client.init({
-
-        authProvider: async (done: MicrosoftGraphClient.AuthProviderCallback) => {
-          if (!this.state.accessToken) {
-            // Might redirect the browser and not return; will redirect back when done
-            const token = await AuthService.getAccessToken(scopes);
-            this.setState({
-              accessToken: token
-            });
-          }
-          done(null, this.state.accessToken);
-        }
+    try {
+      let client = await this.GraphClientFactory(AuthService);
+      let messages = await this.getMessagesFromGraph(client);
+      this.setState({
+        messages: messages,
+        error: ""
       });
     }
-
-    this.msGraphClient
-      .api("me/mailFolders/inbox/messages")
-      .select(["receivedDateTime", "subject"])
-      .top(15)
-      .get(async (error: MicrosoftGraphClient.GraphError, response: any) => {
-        if (!error) {
-          this.setState(Object.assign({}, this.state, {
-            messages: response.value as MicrosoftGraph.Message[]
-          }));
-        } else {
-          this.setState({
-            error: error.message
-          });
-        }
+    catch (error) {
+      this.setState({
+        messages: [],
+        error: error
       });
+    }
+  }
+
+  // TO MOVE TO GRAPH SERVICE
+  private async GraphClientFactory(authService: IAuthService): Promise<MicrosoftGraphClient.Client> {
+
+    let result: MicrosoftGraphClient.Client;
+
+    let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',') || [];
+
+    // Ensure we are logged in
+    if (!authService.isLoggedIn()) {
+
+      await authService.login(scopes);
+
+    }
+
+    // Initialize a new Graph client
+    result = MicrosoftGraphClient.Client.init({
+
+      authProvider: async (done: MicrosoftGraphClient.AuthProviderCallback) => {
+        const token = await AuthService.getAccessToken(scopes);
+        done(null, token);
+      }
+    });
 
     return result;
+  }
+
+  private async getMessagesFromGraph(client: MicrosoftGraphClient.Client): Promise<MicrosoftGraph.Message[]> {
+
+    return new Promise<MicrosoftGraph.Message[]>((resolve, reject) => {
+
+      client
+        .api("me/mailFolders/inbox/messages")
+        .select(["receivedDateTime", "subject"])
+        .top(15)
+        .get(async (error: MicrosoftGraphClient.GraphError, response: any) => {
+          if (!error) {
+            resolve(response.value as MicrosoftGraph.Message[]);
+          } else {
+            reject(error);
+          }
+        });
+
+    });
   }
 
 }
