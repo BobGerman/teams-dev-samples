@@ -1,11 +1,11 @@
 import React from 'react';
+import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
+import * as microsoftTeams from "@microsoft/teams-js";
+
 import { IConfig, ConfigService } from '../../services/ConfigService/ConfigService';
 import ThemeService from '../../services/ThemeService/ThemeService';
-import * as microsoftTeams from "@microsoft/teams-js";
-import { Provider, Header, ThemePrepared } from "@fluentui/react-northstar";
-import IAuthService from '../../services/AuthService/IAuthService';
 import AuthService from '../../services/AuthService/TeamsAuthService';
-import * as MicrosoftGraphClient from "@microsoft/microsoft-graph-client";
+import MSGraphService from '../../services/MSGraphService/MSGraphService';
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 
 /**
@@ -16,7 +16,6 @@ export interface ITabPageState {
   config?: IConfig;
   teamsContext?: microsoftTeams.Context;
   theme: ThemePrepared;
-  graphService?: MicrosoftGraphClient.Client;
   messages: MicrosoftGraph.Message[];
   error: string;
 }
@@ -29,7 +28,6 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
       config: undefined,
       teamsContext: undefined,
       theme: ThemeService.getFluentTheme(),
-      graphService: undefined,
       messages: [],
       error: ""
     }
@@ -53,13 +51,11 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
     });
 
     // 3. Try to silently get messages
-    await this.getMessages();
+    await this.getMessages(true);
 
-    // Per https://stackoverflow.com/questions/63765776/personal-tab-renders-fine-then-a-few-seconds-later-shows-there-was-a-problem-r/64048235#64048235
-    // need to call both notifyAppLoaded() and notifySuccess() or Teams will error out after a few seconds
+    // 4. Tell Teams to stop the loading indicator and show the page
     microsoftTeams.appInitialization.notifyAppLoaded();
-    microsoftTeams.appInitialization.notifySuccess();
-
+    microsoftTeams.appInitialization.notifySuccess();   // see http://bit.ly/387PYqO 
   }
 
   render() {
@@ -106,66 +102,24 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
     }
   }
 
-  private async getMessages(): Promise<void> {
+  private async getMessages(silent: boolean = false): Promise<void> {
 
     try {
-      let client = await this.GraphClientFactory(AuthService);
-      let messages = await this.getMessagesFromGraph(client);
+      let graphService = await MSGraphService.Factory(AuthService);
+      let messages = await graphService.getMessages();
       this.setState({
         messages: messages,
         error: ""
       });
     }
     catch (error) {
-      this.setState({
-        messages: [],
-        error: error
-      });
-    }
-  }
-
-  // TO MOVE TO GRAPH SERVICE
-  private async GraphClientFactory(authService: IAuthService): Promise<MicrosoftGraphClient.Client> {
-
-    let result: MicrosoftGraphClient.Client;
-
-    let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',') || [];
-
-    // Ensure we are logged in
-    if (!authService.isLoggedIn()) {
-
-      await authService.login(scopes);
-
-    }
-
-    // Initialize a new Graph client
-    result = MicrosoftGraphClient.Client.init({
-
-      authProvider: async (done: MicrosoftGraphClient.AuthProviderCallback) => {
-        const token = await AuthService.getAccessToken(scopes);
-        done(null, token);
-      }
-    });
-
-    return result;
-  }
-
-  private async getMessagesFromGraph(client: MicrosoftGraphClient.Client): Promise<MicrosoftGraph.Message[]> {
-
-    return new Promise<MicrosoftGraph.Message[]>((resolve, reject) => {
-
-      client
-        .api("me/mailFolders/inbox/messages")
-        .select(["receivedDateTime", "subject"])
-        .top(15)
-        .get(async (error: MicrosoftGraphClient.GraphError, response: any) => {
-          if (!error) {
-            resolve(response.value as MicrosoftGraph.Message[]);
-          } else {
-            reject(error);
-          }
+      if (!silent) {
+        this.setState({
+          messages: [],
+          error: error
         });
-
-    });
+      }
+    }
   }
+
 }
