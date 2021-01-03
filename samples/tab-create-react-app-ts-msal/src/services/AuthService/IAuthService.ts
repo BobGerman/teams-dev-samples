@@ -1,4 +1,3 @@
-import IAuthState from './IAuthState';
 import * as microsoftTeams from "@microsoft/teams-js";
 
 export default interface IAuthService {

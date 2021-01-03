@@ -25,7 +25,7 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
 
   async componentDidMount() {
 
-    this.getMessages();
+    await this.getMessages();
 
   }
 
