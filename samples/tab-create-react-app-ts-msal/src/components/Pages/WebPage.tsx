@@ -9,7 +9,6 @@ import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
  */
 export interface IWebPageProps { }
 export interface IWebPageState {
-  accessToken: string;
   messages: MicrosoftGraph.Message[];
   error: string;
 }
@@ -18,7 +17,6 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
   constructor(props: IWebPageProps) {
     super(props);
     this.state = {
-      accessToken: "",
       messages: [],
       error: ""
     }
