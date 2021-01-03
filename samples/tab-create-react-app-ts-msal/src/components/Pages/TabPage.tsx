@@ -15,7 +15,6 @@ export interface ITabPageState {
   config?: IConfig;
   teamsContext?: microsoftTeams.Context;
   theme: ThemePrepared;
-  username: string;
   accessToken: string;
   messages: MicrosoftGraph.Message[];
   error: string;
@@ -29,7 +28,6 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
       config: undefined,
       teamsContext: undefined,
       theme: ThemeService.getFluentTheme(),
-      username: "",
       accessToken: "",
       messages: [],
       error: ""
@@ -96,7 +94,7 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
           }</p>
           <p>Your app is running in the Teams UI</p>
           <p>Your short message is {this.state.config?.shortMessage}</p>
-          <p>You are logged in as {this.state.username}</p>
+          <p>Username: {AuthService.getUsername()}</p>
           <ol>
             {
               this.state.messages.map(message => (
