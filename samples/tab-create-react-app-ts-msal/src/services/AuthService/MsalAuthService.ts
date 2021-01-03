@@ -76,14 +76,30 @@ class MsalAuthService {
     }
 
     // Call this to log the user in
-    login(scopes?: string[]) {
-        if (scopes) {
-            this.msalRequest.scopes = scopes;
-        }
-        try {
-            this.msalClient.loginRedirect(this.msalRequest);
-        }
-        catch (err) { console.log(err); }
+    public login(scopes?: string[]): Promise<void> {
+
+        return new Promise<void>((resolve, reject) => {
+
+            if (scopes &&
+                this.compareScopes(scopes, this.msalRequest.scopes) &&
+                this.isLoggedIn()) {
+                // We're already logged in with this scope, nothing to do
+                resolve();
+            } else {
+                if (scopes) {
+                    this.msalRequest.scopes = scopes;
+                }
+                try {
+                    // Redirects the page and never returns - should pass
+                    // the test above after a redirect
+                    this.msalClient.loginRedirect(this.msalRequest);
+                }
+                catch (err) {
+                    console.log(err);
+                    reject();
+                }
+            }
+        });
     }
 
     // Call this to get the access token
@@ -112,7 +128,8 @@ class MsalAuthService {
                 result = {
                     username: this.getUsername(),
                     accessToken: resp.accessToken,
-                    expiresOn: (new Date(resp.expiresOn!)).getTime() 
+                    scopes: scopes ? scopes : [],
+                    expiresOn: (new Date(resp.expiresOn!)).getTime()
                 }
             }
         }
@@ -124,6 +141,19 @@ class MsalAuthService {
                 throw (error);
             }
         }
+        return result;
+    }
+
+    private compareScopes(scopes1: string[], scopes2: string[]): boolean {
+        let result = false;
+
+        if (scopes1.length === scopes2.length) {
+            const s1 = scopes1.slice().sort();
+            const s2 = scopes2.slice().sort();
+
+            return s1.every((s: string, i: number) => s === s2[i]);
+        }
+
         return result;
     }
 }

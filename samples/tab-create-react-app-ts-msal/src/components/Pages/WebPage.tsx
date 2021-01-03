@@ -23,38 +23,14 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
     }
   }
 
-  private msGraphClient?: MicrosoftGraphClient.Client;
+  async componentDidMount() {
 
-  componentDidMount() {
+    this.getMessages();
 
-    let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',');
-    if (!AuthService.isLoggedIn()) {
-
-      // Will redirect the browser and not return; will redirect back when done
-      AuthService.login(scopes);
-
-    } else {
-
-      this.msGraphClient = MicrosoftGraphClient.Client.init({
-
-        authProvider: async (done: MicrosoftGraphClient.AuthProviderCallback) => {
-          if (!this.state.accessToken) {
-            // Might redirect the browser and not return; will redirect back when done
-            const token = await AuthService.getAccessToken(scopes);
-            this.setState({
-              accessToken: token
-            });
-          }
-          done(null, this.state.accessToken);
-        }
-
-      });
-      this.getMessages();
-    }
   }
 
   render() {
-    
+
     let key = 0;
     return (
       <div>
@@ -78,11 +54,40 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
     );
   }
 
-  private getMessages() {
+  private msGraphClient?: MicrosoftGraphClient.Client;
+  private async getMessages(): Promise<MicrosoftGraph.Message[]> {
 
-    if (this.msGraphClient) {
+    let result: MicrosoftGraph.Message[] = [];
 
-      this.msGraphClient
+    if (!this.msGraphClient) {
+
+      // Set up the Graph client
+      let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',') || [];
+
+      // Ensure we are logged in
+      if (!AuthService.isLoggedIn()) {
+
+        await AuthService.login(scopes);
+
+      }
+
+      // Initialize a new Graph client
+      this.msGraphClient = MicrosoftGraphClient.Client.init({
+
+        authProvider: async (done: MicrosoftGraphClient.AuthProviderCallback) => {
+          if (!this.state.accessToken) {
+            // Might redirect the browser and not return; will redirect back when done
+            const token = await AuthService.getAccessToken(scopes);
+            this.setState({
+              accessToken: token
+            });
+          }
+          done(null, this.state.accessToken);
+        }
+      });
+    }
+
+    this.msGraphClient
       .api("me/mailFolders/inbox/messages")
       .select(["receivedDateTime", "subject"])
       .top(15)
@@ -97,6 +102,8 @@ export default class WebPage extends React.Component<IWebPageProps, IWebPageStat
           });
         }
       });
-    }
+
+    return result;
   }
+
 }
