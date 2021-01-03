@@ -7,13 +7,6 @@ import * as microsoftTeams from "@microsoft/teams-js";
 // don't new it up.
 class TeamsAuthService implements IAuthService {
 
-    private msTeams?: typeof microsoftTeams = undefined;
-
-    // Call this once to capture the microsoftTeams namespace // ?? necessary ??
-    public init (msTeams: typeof microsoftTeams) {
-        this.msTeams = msTeams;
-    }
-
     private authState: IAuthState = {
         username: "",
         accessToken: "",
@@ -37,9 +30,9 @@ class TeamsAuthService implements IAuthService {
                 // We're already logged in with this scope, nothing to do
                 resolve();
             } else {
-                if (scopes && this.msTeams) {
+                if (scopes) {
                     this.authState.scopes = scopes;
-                    this.msTeams.authentication.authenticate({
+                    microsoftTeams.authentication.authenticate({
                         url: window.location.origin + "/#teamsauthpopup",
                         width: 600,
                         height: 535,

@@ -53,19 +53,19 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
       });
     });
 
-    // 3. Set up the Graph service
+    // 3. Try to silently get messages
     try {
-      AuthService.init(microsoftTeams);
       this.getMessages();
     }
     catch {}
     finally {
+
       // Per https://stackoverflow.com/questions/63765776/personal-tab-renders-fine-then-a-few-seconds-later-shows-there-was-a-problem-r/64048235#64048235
       // need to call both notifyAppLoaded() and notifySuccess() or Teams will error out after a few seconds
       microsoftTeams.appInitialization.notifyAppLoaded();
       microsoftTeams.appInitialization.notifySuccess();
-    }
 
+    }
   }
 
   render() {
@@ -162,52 +162,4 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
     return result;
   }
 
-  // private async getMessages() {
-
-  //   /// ??? TRYING to figure out the logic here
-
-  //   let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',') || [];
-  //   TeamsAuthService.init(microsoftTeams);
-  //   if (!TeamsAuthService.isLoggedIn()) {
-
-  //     await TeamsAuthService.login(scopes);
-  //     const accessToken = await TeamsAuthService.getAccessToken(scopes);
-  //     this.msGraphClient = MicrosoftGraphClient.Client.init({
-
-  //       authProvider: async (done: MicrosoftGraphClient.AuthProviderCallback) => {
-  //         done(null, accessToken);
-  //       }
-
-  //     });
-  //     this.getMessages();
-  //   }
-
-  //   const token = await TeamsAuthService.getAccessToken(scopes);
-
-  //   if (! this.msGraphClient) {
-
-  //     this.msGraphClient = MicrosoftGraphClient.Client.init({
-  //       authProvider: async (done) => {
-  //           done(null, token);
-  //       }
-  //   });
-
-  //     this.msGraphClient
-  //     .api("me/mailFolders/inbox/messages")
-  //     .select(["receivedDateTime", "subject"])
-  //     .top(15)
-  //     .get(async (error: MicrosoftGraphClient.GraphError, response: any) => {
-  //       if (!error) {
-  //         this.setState(Object.assign({}, this.state, {
-  //           messages: response.value as MicrosoftGraph.Message[],
-  //           username: TeamsAuthService.getUsername()
-  //         }));
-  //       } else {
-  //         this.setState({
-  //           error: error.message
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
 }
