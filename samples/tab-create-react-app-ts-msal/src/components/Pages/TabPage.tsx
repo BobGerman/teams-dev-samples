@@ -82,13 +82,10 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
           <Header>{process.env.REACT_APP_MANIFEST_NAME}</Header>
           <p>Version {process.env.REACT_APP_MANIFEST_APP_VERSION}</p>
           { this.state.error ? <p>Error: {this.state.error}</p> : null}
-          <p>{this.state.teamsContext?.teamName ?
-            `You are in ${this.state.teamsContext?.teamName}` :
-            `You are not in a Team`
-          }</p>
+          <p>You are logged in as: {AuthService.getUsername()}</p>
           <p>Your app is running in the Teams UI</p>
-          <p>Your short message is {this.state.config?.shortMessage}</p>
-          <p>Username: {AuthService.getUsername()}</p>
+          { this.state.teamsContext?.teamName ? <p>You are in {this.state.teamsContext?.teamName}</p> : null}
+          { this.state.config?.shortMessage ? <p>You configured a short message for this tab: {this.state.config?.shortMessage}</p> : null }
           <ol>
             {
               this.state.messages.map(message => (
@@ -102,7 +99,7 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
     }
   }
 
-  private async getMessages(silent: boolean = false): Promise<void> {
+  private async getMessages(silent = false): Promise<void> {
 
     try {
       let graphService = await MSGraphService.Factory(AuthService);
