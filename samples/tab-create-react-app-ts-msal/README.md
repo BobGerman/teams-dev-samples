@@ -1,7 +1,7 @@
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
+This project requires Node version 12 or greater
 ## Available Scripts
 
 In the project directory, you can run:
