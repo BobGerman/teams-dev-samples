@@ -68,9 +68,7 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
           <Header>{process.env.REACT_APP_MANIFEST_NAME}</Header>
           <p>Version {process.env.REACT_APP_MANIFEST_APP_VERSION}</p>
           { this.state.error ? <p>Error: {this.state.error}</p> : null}
-          <button onClick={async () => {
-            await this.getMessages();
-          }}>Log in</button>
+          <button onClick={async () => { await this.getMessages(); }}>Log in</button>
         </Provider>
       );
 
@@ -110,7 +108,11 @@ export default class TabPage extends React.Component<ITabPageProps, ITabPageStat
       });
     }
     catch (error) {
-      if (!silent) {
+      if (silent) {
+        this.setState ({
+          messages: []
+        });
+      } else {
         this.setState({
           messages: [],
           error: error

@@ -8,7 +8,7 @@ import TabPage from '../Pages/TabPage';
 import TabConfigPage from "../Pages/TabConfigPage";
 import TeamsAuthPopup from "../Pages/TeamsAuthPopup";
 import WebPage from "../Pages/WebPage";
-import AuthService from '../../services/AuthService/MsalAuthService';
+import AuthService from '../../services/AuthService/MsalRefreshAuthService';
 
 /**
  * The main app which handles the initialization and routing
@@ -16,7 +16,7 @@ import AuthService from '../../services/AuthService/MsalAuthService';
  */
 export interface IAppProps { };
 export interface IAppState {
-  authInitialized: boolean;
+  redirectHandled: boolean;
 }
 
 export default class App extends React.Component<IAppProps, IAppState> {
@@ -24,16 +24,16 @@ export default class App extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
     this.state = {
-      authInitialized: false
-    }
+      redirectHandled: false
+    };
   }
 
   componentDidMount() {
     // React routing and OAuth don't play nice together
     // Take care of the OAuth fun before routing
-    AuthService.init().then(() => {
+    AuthService.handleRedirect().then(() => {
       this.setState({
-        authInitialized: true
+        redirectHandled: true
       });
     })
   }
@@ -42,7 +42,7 @@ export default class App extends React.Component<IAppProps, IAppState> {
 
     if (microsoftTeams) {
 
-      if (!this.state.authInitialized) {
+      if (!this.state.redirectHandled) {
 
         return (
           <div className="App">

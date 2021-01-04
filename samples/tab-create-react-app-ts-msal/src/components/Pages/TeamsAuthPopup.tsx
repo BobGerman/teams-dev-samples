@@ -1,7 +1,7 @@
 import React from 'react';
 import * as microsoftTeams from "@microsoft/teams-js";
 
-import AuthService from "../../services/AuthService/MsalAuthService";
+import AuthService from "../../services/AuthService/MsalRefreshAuthService";
 
 class TeamsAuthPopup extends React.Component {
 
@@ -10,9 +10,10 @@ class TeamsAuthPopup extends React.Component {
     if (microsoftTeams) {
       microsoftTeams.initialize(window as any);
       microsoftTeams.getContext((context: microsoftTeams.Context) => {
+
         if (context) {
 
-            let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',');
+          let scopes = process.env.REACT_APP_AAD_GRAPH_DELEGATED_SCOPES?.split(',');
 
           // If here we have a Teams context. Ensure we're logged in
           // and then request the access token.

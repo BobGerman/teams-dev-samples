@@ -18,6 +18,9 @@ ol {
 li {
   padding-bottom: 10pt;
 }
+button {
+  margin-top: 20pt;
+}
 .PropName {
   font-weight: bold;
   color: #6264A7;

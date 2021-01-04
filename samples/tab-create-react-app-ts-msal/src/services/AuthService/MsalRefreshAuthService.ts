@@ -5,7 +5,7 @@ import IAuthState from './IAuthState';
 // can retain state. This module exports the single instance
 // of the service rather than the service class; just use it,
 // don't new it up.
-class MsalAuthService {
+class MsalRefreshAuthService {
 
     // MSAL request object to use over and over
     private msalRequest: msal.RedirectRequest = { scopes: [] as string[] };
@@ -36,7 +36,7 @@ class MsalAuthService {
 
     // Call this on every request to an authenticated page
     // Promise returns true if user is logged in, false if user is not
-    async init() {
+    async handleRedirect() {
 
         let result = false;
         let response = await this.msalClient.handleRedirectPromise();
@@ -158,4 +158,4 @@ class MsalAuthService {
     }
 }
 
-export default new MsalAuthService();
+export default new MsalRefreshAuthService();

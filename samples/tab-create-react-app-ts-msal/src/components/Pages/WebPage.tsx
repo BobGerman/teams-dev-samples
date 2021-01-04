@@ -1,7 +1,7 @@
 import React from 'react';
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 
-import AuthService from '../../services/AuthService/MsalAuthService';
+import AuthService from '../../services/AuthService/MsalRefreshAuthService';
 import MSGraphService from '../../services/MSGraphService/MSGraphService';
 
 /**
