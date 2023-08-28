@@ -1,3 +1,36 @@
+export default interface RootObject {
+    url: string;
+    repository_url: string;
+    labels_url: string;
+    comments_url: string;
+    events_url: string;
+    html_url: string;
+    id: number;
+    node_id: string;
+    number: number;
+    title: string;
+    user: User;
+    labels: Label[];
+    state: string;
+    locked: boolean;
+    assignee?: User;
+    assignees: User[];
+    milestone?: any;
+    comments: number;
+    created_at: string;
+    updated_at: string;
+    closed_at?: any;
+    author_association: string;
+    active_lock_reason?: any;
+    draft?: boolean;
+    pull_request?: Pullrequest;
+    body: string;
+    reactions: Reactions;
+    timeline_url: string;
+    performed_via_github_app?: any;
+    state_reason?: string;
+}
+
 export interface User {
     login: string;
     id: number;
@@ -46,37 +79,4 @@ export interface Reactions {
     heart: number;
     rocket: number;
     eyes: number;
-}
-
-export default interface GithubIssue {
-    url: string;
-    repository_url: string;
-    labels_url: string;
-    comments_url: string;
-    events_url: string;
-    html_url: string;
-    id: number;
-    node_id: string;
-    number: number;
-    title: string;
-    user: User;
-    labels: Label[];
-    state: string;
-    locked: boolean;
-    assignee?: User;
-    assignees: User[];
-    milestone?: any;
-    comments: number;
-    created_at: string;
-    updated_at: string;
-    closed_at?: any;
-    author_association: string;
-    active_lock_reason?: any;
-    draft?: boolean;
-    pull_request?: Pullrequest;
-    body: string;
-    reactions: Reactions;
-    timeline_url: string;
-    performed_via_github_app?: any;
-    state_reason?: string;
 }

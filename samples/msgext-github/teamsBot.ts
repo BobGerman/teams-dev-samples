@@ -5,6 +5,7 @@ import {
   MessagingExtensionResponse,
 } from "botbuilder";
 import issuesME from "./messageExtensions/issuesME";
+import pullRequestME from "./messageExtensions/pullRequestME";
 
 export interface DataInterface {
   likeCount: number;
@@ -25,6 +26,8 @@ export class TeamsBot extends TeamsActivityHandler {
     switch (query.parameters[0].name) {
       case issuesME.ME_NAME:
         return await issuesME.handleTeamsMessagingExtensionQuery(context, query);
+      case pullRequestME.ME_NAME:
+        return await pullRequestME.handleTeamsMessagingExtensionQuery(context, query);
       default:
         return null;
     }
@@ -36,7 +39,9 @@ export class TeamsBot extends TeamsActivityHandler {
   ): Promise<MessagingExtensionResponse> {
     switch (item.queryType) {
       case issuesME.ME_NAME:
-        return await issuesME.handleTeamsMessagingExtensionSelectItem(context, item.githubIssue); 
+        return await issuesME.handleTeamsMessagingExtensionSelectItem(context, item); 
+      case pullRequestME.ME_NAME:
+        return await pullRequestME.handleTeamsMessagingExtensionSelectItem(context, item);
       default:
         return null;
     }

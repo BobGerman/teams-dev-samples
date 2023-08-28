@@ -10,7 +10,7 @@
                     "type": "TextBlock",
                     "size": "small",
                     "weight": "bolder",
-                    "text": "ISSUE ${number}",
+                    "text": "PULL REQUEST ${number}",
                     "wrap": false
                 },
                 {
@@ -129,7 +129,7 @@
                                     "actions": [
                                         {
                                             "type": "Action.OpenUrl",
-                                            "title": "View issue",
+                                            "title": "View pull request",
                                             "url": "${html_url}"
                                         }
                                     ],

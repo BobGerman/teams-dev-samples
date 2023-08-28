@@ -40,8 +40,26 @@
                     "parameters": [
                         {
                             "name": "issuesQuery",
-                            "title": "Github",
+                            "title": "Issues",
                             "description": "Search issues in this github repository",
+                            "inputType": "text"
+                        }
+                    ]
+                },
+                {
+                    "id": "pullRequestsQuery",
+                    "context": [
+                        "compose",
+                        "commandBox"
+                    ],
+                    "description": "Search pull requests in this github repository",
+                    "title": "Pull Requests",
+                    "type": "query",
+                    "parameters": [
+                        {
+                            "name": "pullRequestsQuery",
+                            "title": "Pull Requests",
+                            "description": "Search pull in this github repository",
                             "inputType": "text"
                         }
                     ]
