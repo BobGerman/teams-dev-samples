@@ -4,6 +4,19 @@
     "version": "1.4",
     "body": [
         {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "size": "extraLarge",
+                    "weight": "lighter",
+                    "text": "${title}",
+                    "wrap": true
+                }
+            ],
+            "bleed": true
+        },
+        {
             "type": "ColumnSet",
             "columns": [
                 {
@@ -32,9 +45,16 @@
                             "items": [
                                 {
                                     "type": "TextBlock",
-                                    "size": "extraLarge",
+                                    "size": "medium",
                                     "weight": "lighter",
-                                    "text": "${title}",
+                                    "text": "Submitted by ${user.login}",
+                                    "wrap": true
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "size": "medium",
+                                    "weight": "lighter",
+                                    "text": "Submitted on ${created_at}",
                                     "wrap": true
                                 }
                             ],

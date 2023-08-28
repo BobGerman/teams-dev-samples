@@ -29,6 +29,12 @@ class IssuesME {
 
                 const itemAttachment = CardFactory.heroCard(issue.title);
                 let previewAttachment = CardFactory.thumbnailCard(issue.title);
+
+                // Clean up the value for presentation
+                issue.created_at = new Date(issue.created_at).toLocaleDateString();
+                issue.updated_at = issue.updated_at ? new Date(issue.updated_at).toLocaleDateString() : "n/a";
+                issue.closed_at = issue.closed_at ? new Date(issue.closed_at).toLocaleDateString() : "n/a";
+
                 previewAttachment.content.tap = {
                     type: "invoke",
                     value: {    // Values passed to selectItem when an item is selected
