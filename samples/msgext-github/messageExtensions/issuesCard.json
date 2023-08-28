@@ -54,7 +54,7 @@
                                     "type": "TextBlock",
                                     "size": "medium",
                                     "weight": "lighter",
-                                    "text": "Submitted on ${created_at}",
+                                    "text": "State: ${state}",
                                     "wrap": true
                                 }
                             ],
@@ -78,13 +78,19 @@
                                 {
                                     "type": "TextBlock",
                                     "spacing": "small",
-                                    "text": "${state}",
+                                    "text": "Created: ${created_at}",
                                     "wrap": true
                                 },
                                 {
                                     "type": "TextBlock",
-                                    "spacing": "none",
-                                    "text": "${url}",
+                                    "spacing": "small",
+                                    "text": "Updated: ${updated_at}",
+                                    "wrap": true
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "spacing": "small",
+                                    "text": "Closed: ${closed_at}",
                                     "wrap": true
                                 }
                             ],
@@ -92,7 +98,7 @@
                             "height": "stretch"
                         }
                     ],
-                    "width": 45
+                    "width": 75
                 },
                 {
                     "type": "Column",
@@ -102,29 +108,13 @@
                             "height": "stretch",
                             "items": [
                                 {
-                                    "type": "ColumnSet",
-                                    "columns": [
-                                        {
-                                            "type": "Column",
-                                            "verticalContentAlignment": "center",
-                                            "items": [
-                                                {
-                                                    "type": "Image",
-                                                    "url": "${user.avatar_url}"
-                                                }
-                                            ],
-                                            "width": "stretch"
-                                        }
-                                    ]
-                                },
-                                {
                                     "type": "ActionSet",
                                     "separator": true,
                                     "actions": [
                                         {
                                             "type": "Action.OpenUrl",
-                                            "title": "Web site",
-                                            "url": "https://adaptivecards.io"
+                                            "title": "View issue",
+                                            "url": "${html_url}"
                                         }
                                     ],
                                     "spacing": "medium"
