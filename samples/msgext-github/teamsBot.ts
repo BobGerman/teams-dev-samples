@@ -21,7 +21,7 @@ export class TeamsBot extends TeamsActivityHandler {
     context: TurnContext,
     query: MessagingExtensionQuery
   ): Promise<MessagingExtensionResponse> {
-    
+
     switch (query.parameters[0].name) {
       case issuesME.ME_NAME:
         return await issuesME.handleTeamsMessagingExtensionQuery(context, query);
@@ -36,7 +36,7 @@ export class TeamsBot extends TeamsActivityHandler {
   ): Promise<MessagingExtensionResponse> {
     switch (item.queryType) {
       case issuesME.ME_NAME:
-        return await issuesME.handleTeamsMessagingExtensionSelectItem(context, item); 
+        return await issuesME.handleTeamsMessagingExtensionSelectItem(context, item.githubIssue); 
       default:
         return null;
     }

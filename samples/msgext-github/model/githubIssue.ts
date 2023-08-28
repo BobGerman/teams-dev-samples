@@ -48,7 +48,7 @@ export interface Reactions {
     eyes: number;
 }
 
-export default interface GithubIssueResponse {
+export default interface GithubIssue {
     url: string;
     repository_url: string;
     labels_url: string;

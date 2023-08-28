@@ -1,12 +1,12 @@
 import { default as axios } from "axios";
-import ACData from "adaptivecards-templating";
+import * as ACData from "adaptivecards-templating";
 import { 
     CardFactory,
     TurnContext,
     MessagingExtensionQuery,
     MessagingExtensionResponse
 } from "botbuilder";
-import GithubIssueResponse from "../model/githubIssueResponse";
+import GithubIssue from "../model/githubIssue";
 
 class IssuesME {
 
@@ -25,7 +25,7 @@ class IssuesME {
 
             const attachments = [];
             const results = response.data.filter(i => i.title.toLowerCase().includes(query.parameters[0].value.toLowerCase()));
-            results.forEach((issue: GithubIssueResponse) => {
+            results.forEach((issue: GithubIssue) => {
 
                 const itemAttachment = CardFactory.heroCard(issue.title);
                 let previewAttachment = CardFactory.thumbnailCard(issue.title);
@@ -33,23 +33,8 @@ class IssuesME {
                     type: "invoke",
                     value: {    // Values passed to selectItem when an item is selected
                         queryType: this.ME_NAME,
-                        id: issue.id,
-                        url: issue.url,
-
-                        SupplierID: 1,
-                        flagUrl: "",
-                        imageUrl: "",
-                        Address:  "",
-                        City:  "",
-                        CompanyName: issue.title,
-                        ContactName: "",
-                        ContactTitle: "",
-                        Country: "",
-                        Fax: "",
-                        Phone: "",
-                        PostalCode: "",
-                        Region: ""
-                    },
+                        githubIssue: issue
+                    }
                 };
                 const attachment = { ...itemAttachment, preview: previewAttachment };
                 attachments.push(attachment);
@@ -68,10 +53,9 @@ class IssuesME {
         }
     };
 
-    async handleTeamsMessagingExtensionSelectItem (context, selectedValue): Promise<MessagingExtensionResponse>  {
+    async handleTeamsMessagingExtensionSelectItem (context: TurnContext, selectedValue: GithubIssue): Promise<MessagingExtensionResponse>  {
 
-        // Read card from JSON file
-        const templateJson = require('../cards/supplierCard.json');
+        const templateJson = require('./issuesCard.json');
         const template = new ACData.Template(templateJson);
         const card = template.expand({
             $root: selectedValue

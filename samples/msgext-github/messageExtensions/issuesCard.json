@@ -17,8 +17,8 @@
                                 {
                                     "type": "Image",
                                     "horizontalAlignment": "center",
-                                    "url": "${flagUrl}",
-                                    "altText": "${Country} flag"
+                                    "url": "${user.avatar_url}",
+                                    "altText": "${user.login}"
                                 }
                             ]
                         }
@@ -34,7 +34,7 @@
                                     "type": "TextBlock",
                                     "size": "extraLarge",
                                     "weight": "lighter",
-                                    "text": "${CompanyName}",
+                                    "text": "${title}",
                                     "wrap": true
                                 }
                             ],
@@ -58,37 +58,13 @@
                                 {
                                     "type": "TextBlock",
                                     "spacing": "small",
-                                    "text": "${Address}",
+                                    "text": "${state}",
                                     "wrap": true
                                 },
                                 {
                                     "type": "TextBlock",
                                     "spacing": "none",
-                                    "text": "${City} ${Region} ${PostalCode} ${Country}",
-                                    "wrap": true
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "spacing": "none",
-                                    "text": "${Phone}",
-                                    "wrap": true
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "spacing": "large",
-                                    "text": "Contact:",
-                                    "wrap": true
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "spacing": "none",
-                                    "text": "${ContactName}",
-                                    "wrap": true
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "spacing": "none",
-                                    "text": "${ContactTitle}",
+                                    "text": "${url}",
                                     "wrap": true
                                 }
                             ],
@@ -114,7 +90,7 @@
                                             "items": [
                                                 {
                                                     "type": "Image",
-                                                    "url": "${imageUrl}"
+                                                    "url": "${user.avatar_url}"
                                                 }
                                             ],
                                             "width": "stretch"
