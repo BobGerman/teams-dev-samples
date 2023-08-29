@@ -63,7 +63,9 @@ class IssuesME {
     async handleTeamsMessagingExtensionSelectItem (context: TurnContext, selectedValue: any): Promise<MessagingExtensionResponse>  {
 
         const issue: GithubIssue = selectedValue.githubIssue;
-        const templateJson = require('./issuesCard.json');
+        const templateJson = issue.pull_request ?
+            require('./IssuesWithPR.json') :
+            require('./issuesCard.json');
         const template = new ACData.Template(templateJson);
         const card = template.expand({
             $root: issue
